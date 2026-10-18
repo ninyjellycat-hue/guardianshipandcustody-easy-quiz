@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malaysian Guardianship & Custody Quiz</title>
+<style>
+  :root{--pink:#e9a9bd;--deep:#8c4963;--pale:#fff5f8;--ink:#3d3037;--muted:#766771;--line:#f0d6df;--white:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--pale);font-family:Arial,Helvetica,sans-serif;color:var(--ink);line-height:1.55}
+  .quiz-wrap{max-width:900px;margin:0 auto;padding:22px 14px 36px}
+  .hero{background:linear-gradient(135deg,#f7dce5,#fff8fa);border:1px solid var(--line);border-radius:20px;padding:25px 20px;text-align:center;margin-bottom:18px}
+  .eyebrow{text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700;color:var(--deep)}
+  h1{font-size:clamp(25px,5vw,36px);line-height:1.2;margin:8px 0;color:#65374a}
+  .hero p{margin:8px auto 0;max-width:650px;color:#6f5863}
+  .progress-card,.section-card,.question{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+  .progress-top{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:14px;font-weight:700}
+  .bar{height:8px;background:#f6e5eb;border-radius:99px;overflow:hidden;margin-top:10px}
+  .bar-fill{height:100%;width:0;background:var(--deep);transition:width .2s}
+  .section-head{display:flex;align-items:center;gap:12px}
+  .section-number{display:grid;place-items:center;min-width:42px;height:42px;border-radius:12px;background:#f8e2e9;color:var(--deep);font-weight:800}
+  h2{font-size:21px;margin:0;color:#65374a}
+  .section-head p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+  .question{padding:19px}
+  .q-meta{font-size:11px;letter-spacing:1.3px;text-transform:uppercase;font-weight:800;color:var(--deep);margin-bottom:7px}
+  .question h3{font-size:17px;line-height:1.45;margin:0 0 14px}
+  .options{display:grid;gap:9px}
+  .option{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border:1px solid #eadde2;border-radius:11px;cursor:pointer;background:#fff;transition:.15s}
+  .option:hover{border-color:var(--pink);background:#fff9fb}
+  .option input{margin-top:5px;accent-color:var(--deep);flex-shrink:0}
+  .letter{font-weight:800;color:var(--deep);min-width:20px}
+  .option.selected{border-color:var(--deep);background:#fff3f7}
+  .option.correct{border-color:#4b8b68;background:#f1faf4}
+  .option.incorrect{border-color:#c86d76;background:#fff3f3}
+  .feedback{display:none;border-radius:11px;padding:13px 14px;margin-top:12px;font-size:14px}
+  .feedback.show{display:block}
+  .feedback.good{background:#f0faf3;border:1px solid #b9dfc6}
+  .feedback.bad{background:#fff5f4;border:1px solid #efc6c4}
+  .feedback strong{display:block;margin-bottom:4px}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:11px 15px;cursor:pointer}
+  .check{background:var(--deep);color:white}
+  .check:hover{background:#713a50}
+  .secondary{background:#f8e5ec;color:#753c53}
+  .secondary:hover{background:#f2d4df}
+  .score-panel{display:none;text-align:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;margin-top:18px}
+  .score-panel.show{display:block}
+  .score-number{font-size:38px;font-weight:800;color:var(--deep);margin:6px 0}
+  .small{font-size:13px;color:var(--muted)}
+  .footnote{text-align:center;font-size:12px;color:#887782;padding:12px}
+  @media(max-width:520px){.quiz-wrap{padding:12px 9px 24px}.hero{padding:21px 14px}.progress-card,.section-card{padding:14px}.question{padding:15px}.question h3{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="quiz-wrap">
+  <header class="hero">
+    <div class="eyebrow">Malaysian Family Law • Interactive Quiz</div>
+    <h1>Easy Questions</h1>
+    <p>Beginner-friendly questions on definitions and key legal provisions. Choose one answer for each question, then tap <b>Check answer</b> to see the explanation.</p>
+  </header>
+
+  <section class="progress-card" aria-live="polite">
+    <div class="progress-top"><span>Your progress</span><span id="progressText">0 of 10 answered</span></div>
+    <div class="bar"><div class="bar-fill" id="progressFill"></div></div>
+    <div class="small" style="margin-top:8px">Your score updates as you check answers.</div>
+  </section>
+
+  <section class="section-card">
+    <div class="section-head"><div class="section-number">01</div><div><h2>Easy Questions</h2><p>10 questions • Beginner-friendly questions on definitions and key legal provisions.</p></div></div>
+  </section>
+  <div id="sectionQuestions"></div>
+
+  <div class="actions">
+    <button class="check" id="finishBtn" type="button">View final score</button>
+    <button class="secondary" id="resetBtn" type="button">Try again</button>
+  </div>
+  <section class="score-panel" id="scorePanel" aria-live="polite">
+    <div class="eyebrow">Quiz complete</div>
+    <div class="score-number" id="finalScore">0 / 10</div>
+    <p id="scoreMessage"></p>
+    <p class="small">Review each answer above to revise the legal principles.</p>
+  </section>
+  <div class="footnote">Easy Questions • Study aid based only on the material supplied. Check the applicable statute and jurisdiction when applying the law.</div>
+</div>
+
+<script>
+const questions = [{"section": "easy", "question": "What does guardianship mean in Malaysian law?", "options": ["The legal responsibility and authority to care for a child and make decisions about upbringing, education, health and property.", "The right to decide when a child may visit the other parent.", "The right to have a child live with a parent at all times.", "The responsibility to pay for a child's education only."], "answer": 0, "explanation": "Guardianship covers legal responsibility for a child's care and relevant decisions, including property."}, {"section": "easy", "question": "What does child custody mainly refer to?", "options": ["The legal ownership of the child's property.", "The care and control of a child, including relevant decisions about upbringing and education.", "The automatic right of the father to make every decision.", "The appointment of a relative in a parent's will."], "answer": 1, "explanation": "Custody concerns care and control and, under the relevant civil provisions, decisions about upbringing and education."}, {"section": "easy", "question": "Under section 3 of the Guardianship of Infants Act 1961, which responsibilities belong to a guardian of the person?", "options": ["Managing every family dispute between the parents.", "Selling the child's property whenever the guardian considers it useful.", "The child's support, health and education.", "Choosing which parent must receive custody after divorce."], "answer": 2, "explanation": "Section 3 addresses the guardian's responsibility for the child's support, health and education."}, {"section": "easy", "question": "Which statement correctly describes sections 4 and 15–16 of the Guardianship of Infants Act 1961?", "options": ["Section 4 concerns education, while sections 15–16 give unlimited control over property.", "Section 4 concerns appointment by will, while sections 15–16 concern parental access.", "Section 4 gives the father sole authority over property, while sections 15–16 concern the child's wishes.", "Section 4 concerns administration of a child's property, while sections 15–16 restrict certain dealings with it."], "answer": 3, "explanation": "Section 4 concerns administration of a child's property; sections 15–16 restrict certain actions involving the child's property and capital money."}, {"section": "easy", "question": "What does section 5 of the Guardianship of Infants Act 1961 say about mothers and fathers?", "options": ["Only the father may apply to court about upbringing.", "The mother has equal rights only if the father agrees.", "The mother has the same rights and authority as the father within the provision's scope, but equality does not automatically decide custody.", "The mother automatically receives custody whenever the parents disagree."], "answer": 2, "explanation": "Section 5 recognises equal parental rights within its scope and gives the mother the same power to apply to court."}, {"section": "easy", "question": "What is testamentary guardianship under section 7 of the Guardianship of Infants Act 1961?", "options": ["A guardian appointed by a court solely to decide school access.", "A parent appointing a guardian by deed or will, subject to the Act's requirements.", "A child choosing a guardian without legal requirements.", "A relative automatically becoming guardian because they are older."], "answer": 1, "explanation": "Section 7 addresses appointment of a guardian by deed or will, subject to statutory requirements."}, {"section": "easy", "question": "Under section 11 of the Guardianship of Infants Act 1961, what must the court primarily consider?", "options": ["The child's welfare.", "Which parent has the strongest personal preference.", "Which parent has more relatives available.", "Whether the parents agree on every issue."], "answer": 0, "explanation": "Section 11 requires the court to have primary regard to the child's welfare."}, {"section": "easy", "question": "Under section 88(2) of the Law Reform (Marriage and Divorce) Act 1976, how does the court approach a civil custody dispute?", "options": ["It decides according to the father's wishes alone.", "It follows the child's wishes in every case, regardless of age.", "It gives custody to the parent who applies first.", "It treats the child's welfare as paramount and considers parents' wishes and, where appropriate, the child's wishes."], "answer": 3, "explanation": "Section 88(2) makes welfare paramount and requires consideration of parents' wishes and an independent opinion from a child old enough to express one."}, {"section": "easy", "question": "Under section 88(3) of the Law Reform (Marriage and Divorce) Act 1976, what is the general presumption for a child below seven?", "options": ["The child must remain with whichever parent cared for them longest.", "It is beneficial for the child to be with the mother, but the presumption can be rebutted.", "The mother must receive custody regardless of evidence.", "The father is presumed to receive custody."], "answer": 1, "explanation": "Section 88(3) creates a rebuttable presumption favouring the mother for a child below seven."}, {"section": "easy", "question": "In the Islamic family-law terminology provided, what is the difference between wilayah and hadhanah?", "options": ["Wilayah means visitation, while hadhanah means property ownership.", "Both terms mean exactly the same thing.", "Wilayah refers to legal guardianship, while hadhanah concerns physical custody and day-to-day care.", "Wilayah refers only to schooling, while hadhanah refers only to medical treatment."], "answer": 2, "explanation": "Wilayah generally concerns legal authority over a child's person or property; hadhanah concerns physical custody and upbringing."}];
+const answers = {};
+const checked = {};
+function renderSection(section, targetId, offset){
+  const target=document.getElementById(targetId);
+  questions.forEach((q,index)=>{
+    const n=questions.indexOf(q);
+    const card=document.createElement('article');
+    card.className='question'; card.id='question-'+n;
+    const letters=['A','B','C','D'];
+    card.innerHTML=`
+      <div class="q-meta">Question ${index+1} of 10</div>
+      <h3>${q.question}</h3>
+      <div class="options">${q.options.map((opt,i)=>`
+        <label class="option" data-q="${n}" data-i="${i}">
+          <input type="radio" name="q${n}" value="${i}" aria-label="Option ${letters[i]}">
+          <span class="letter">${letters[i]}.</span><span>${opt}</span>
+        </label>`).join('')}</div>
+      <div class="actions"><button class="check" type="button" data-check="${n}">Check answer</button></div>
+      <div class="feedback" id="feedback-${n}" aria-live="polite"></div>`;
+    target.appendChild(card);
+  });
+}
+renderSection('easy','sectionQuestions',0);
+
+document.querySelectorAll('.option input').forEach(input=>{
+  input.addEventListener('change',()=>{
+    const q=Number(input.name.slice(1));
+    answers[q]=Number(input.value);
+    document.querySelectorAll(`.option[data-q="${q}"]`).forEach(el=>el.classList.toggle('selected',Number(el.dataset.i)===answers[q]));
+    updateProgress();
+  });
+});
+document.querySelectorAll('[data-check]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const n=Number(btn.dataset.check);
+    const fb=document.getElementById('feedback-'+n);
+    if(answers[n]===undefined){fb.className='feedback show bad';fb.innerHTML='<strong>Choose an answer first.</strong>Select one of the A–D options, then check your answer.';return;}
+    checked[n]=true;
+    const q=questions[n], correct=answers[n]===q.answer;
+    document.querySelectorAll(`.option[data-q="${n}"]`).forEach(el=>{
+      el.classList.remove('correct','incorrect');
+      const i=Number(el.dataset.i);
+      if(i===q.answer)el.classList.add('correct');
+      else if(i===answers[n]&&!correct)el.classList.add('incorrect');
+    });
+    fb.className='feedback show '+(correct?'good':'bad');
+    fb.innerHTML=`<strong>${correct?'Correct!':'Not quite.'} Answer: ${['A','B','C','D'][q.answer]}.</strong>${q.explanation}`;
+    updateProgress();
+  });
+});
+function updateProgress(){
+  const count=Object.keys(answers).length;
+  document.getElementById('progressText').textContent=`${count} of 10 answered`;
+  document.getElementById('progressFill').style.width=(count/10*100)+'%';
+}
+document.getElementById('finishBtn').addEventListener('click',()=>{
+  const totalChecked=Object.keys(checked).length;
+  const score=Object.keys(checked).reduce((sum,k)=>sum+(answers[k]===questions[k].answer?1:0),0);
+  const panel=document.getElementById('scorePanel');
+  document.getElementById('finalScore').textContent=`${score} / ${totalChecked} checked`;
+  document.getElementById('scoreMessage').textContent=totalChecked<10
+    ? `You have checked ${totalChecked} of 10 questions. Check the remaining answers to get a complete score.`
+    : score>=17?'Excellent work! You have a strong grasp of the material.'
+    : score>=13?'Good effort. Review the explanations for the questions you missed.'
+    : 'Keep practising. Review the explanations, then try again.';
+  panel.classList.add('show');panel.scrollIntoView({behavior:'smooth',block:'center'});
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{location.reload();});
+</script>
+</body>
+</html>
